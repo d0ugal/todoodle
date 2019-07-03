@@ -2,4 +2,4 @@
 set -eux
 set -o pipefail
 
-docker build . -t todos;
+docker build . -t todoodle;
