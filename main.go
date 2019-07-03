@@ -16,12 +16,8 @@ var db *gorm.DB
 
 func initDB() {
 
-	db, err := gorm.Open("mysql", "todos:todos@tcp(192.168.1.200:3306)/todos?charset=utf8mb4&parseTime=True&loc=Local")
+	db, _ = gorm.Open("mysql", "todos:todos@tcp(192.168.1.200:3306)/todos?charset=utf8mb4&parseTime=True&loc=Local")
 	db.LogMode(true)
-
-	if err != nil {
-		panic(err)
-	}
 
 	if !db.HasTable(&tasks{}) {
 		db.CreateTable(&tasks{})
