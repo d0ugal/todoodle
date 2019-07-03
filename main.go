@@ -35,7 +35,6 @@ func setupRoutes(r *gin.Engine) {
 	{
 		v1.POST("/tasks", postTask)
 		v1.GET("/tasks", getTasks)
-		v1.GET("/tasks/:list", getListTasks)
 		v1.DELETE("/tasks", deleteTask)
 	}
 
@@ -73,15 +72,6 @@ func postTask(c *gin.Context) {
 func getTasks(c *gin.Context) {
 	var tasks []tasks
 	db.Find(&tasks)
-	c.JSON(200, tasks)
-}
-
-func getListTasks(c *gin.Context) {
-	list := c.Params.ByName("list")
-
-	var tasks []tasks
-	db.Where("list = ?", list).Find(&tasks)
-
 	c.JSON(200, tasks)
 }
 
