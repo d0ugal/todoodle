@@ -90,5 +90,5 @@ func deleteTask(c *gin.Context) {
 	c.Bind(&task)
 	db.Where("list = ? and title = ?", task.List, task.Title).Unscoped().Delete(tasks{})
 
-	c.JSON(201, gin.H{"deleted": task})
+	c.JSON(200, gin.H{"deleted": task})
 }

@@ -62,11 +62,26 @@ func createTask(t *testing.T, r *gin.Engine, title string, list string, resultSt
 	var dat map[string]interface{}
 
 	if w.Code != resultStatus {
-		t.Fatalf("Expected to get status %d but instead got %d\n", http.StatusCreated, w.Code)
+		t.Fatalf("Expected to get status %d but instead got %d\n", resultStatus, w.Code)
 	}
 
 	return dat
 
+}
+
+func completeTask(t *testing.T, r *gin.Engine, title string, list string) int {
+
+	task := map[string]string{"Title": title, "List": list}
+	jsonStr, _ := json.Marshal(task)
+	req, err := http.NewRequest(http.MethodDelete, "api/v1/tasks", bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		t.Fatalf("Couldn't create request: %v\n", err)
+	}
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return w.Code
 }
 
 func TestGetTasks(t *testing.T) {
@@ -115,6 +130,28 @@ func TestPostMultipleTasks(t *testing.T) {
 	request := requestTasks(t, r)
 
 	if len(request) != 2 {
+		t.Fatalf("Expected to have one task in the result. Got %d\n", len(request))
+	}
+
+}
+
+func TestDeleteTask(t *testing.T) {
+	r := testApp()
+
+	title := "Task Title"
+	list := "list-name"
+
+	createTask(t, r, title, list, http.StatusCreated)
+
+	responseCode := completeTask(t, r, title, list)
+
+	if responseCode != http.StatusOK {
+		t.Fatalf("Expected to get status %d but instead got %d\n", http.StatusOK, responseCode)
+	}
+
+	request := requestTasks(t, r)
+
+	if len(request) != 0 {
 		t.Fatalf("Expected to have one task in the result. Got %d\n", len(request))
 	}
 
