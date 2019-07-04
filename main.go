@@ -40,11 +40,19 @@ func setupRoutes(r *gin.Engine) {
 
 }
 
+func cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Add("Access-Control-Allow-Origin", "*")
+		c.Next()
+	}
+}
+
 func main() {
 	initDB()
 	defer db.Close()
 
 	r := gin.Default()
+	r.Use(cors())
 
 	setupRoutes(r)
 
