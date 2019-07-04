@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -16,7 +18,9 @@ var db *gorm.DB
 
 func initDB() {
 
-	db, _ = gorm.Open("mysql", "todos:todos@tcp(192.168.1.200:3306)/todos?charset=utf8mb4&parseTime=True&loc=Local")
+	mysqlConnection := os.Getenv("MYSQL_URL")
+
+	db, _ = gorm.Open("mysql", mysqlConnection)
 	db.LogMode(true)
 
 	if !db.HasTable(&tasks{}) {
