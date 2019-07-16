@@ -156,3 +156,26 @@ func TestDeleteTask(t *testing.T) {
 	}
 
 }
+
+func TestTaskReport(t *testing.T) {
+
+	r := testApp()
+
+	// TODO: Change this to use gorm directly
+	createTask(t, r, "Task Title 1", "list-name-a", http.StatusCreated)
+	createTask(t, r, "Task Title 2", "list-name-a", http.StatusCreated)
+	createTask(t, r, "Task Title 3", "list-name-a", http.StatusCreated)
+	createTask(t, r, "Task Title 1", "list-name-b", http.StatusCreated)
+	createTask(t, r, "Task Title 2", "list-name-b", http.StatusCreated)
+	createTask(t, r, "Task Title 1", "list-name-c", http.StatusCreated)
+
+	rep := createReport()
+
+	if len(rep.Tasks) != 6 {
+		t.Fatalf("Expected to find 6 tasks but found %d\n", len(rep.Lists))
+	}
+	if len(rep.Lists) != 3 {
+		t.Fatalf("Expected to find 3 lists but found %d\n", len(rep.Lists))
+	}
+
+}
